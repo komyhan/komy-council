@@ -1,0 +1,120 @@
+{
+  "calls": [
+    {
+      "provider": "claude",
+      "status": "completed",
+      "startedAt": "2026-11-10T15:40:02.141Z",
+      "model": "fake-claude",
+      "responseId": "id",
+      "usage": {
+        "input_tokens": 1,
+        "output_tokens": 1
+      },
+      "finishedAt": "2026-11-10T15:40:02.142Z"
+    },
+    {
+      "provider": "gpt",
+      "status": "completed",
+      "startedAt": "2026-11-10T15:40:02.142Z",
+      "model": "fake-gpt",
+      "responseId": "id",
+      "usage": {
+        "input_tokens": 1,
+        "output_tokens": 1
+      },
+      "finishedAt": "2026-11-10T15:40:02.142Z"
+    }
+  ],
+  "checks": [
+    {
+      "name": "입고 100 → 예약 30 → 부분출고 10 → 잔여 예약 취소 20",
+      "passed": true
+    },
+    {
+      "name": "같은 거래를 두 번 보내도 중복 반영 없음",
+      "passed": true
+    },
+    {
+      "name": "재고보다 많은 예약 거부 · 실패 후 상태 보존",
+      "passed": true
+    },
+    {
+      "name": "잘못된 수량과 예약 없는 출고 거부",
+      "passed": true
+    },
+    {
+      "name": "고정 시드 가상 거래 1,000건 · 별도 합계 대조",
+      "passed": true
+    }
+  ],
+  "passed": true,
+  "stage": "독립 리뷰와 자동 시험 통과 · 사람 검토 전",
+  "scope": "AI가 작성한 제한 규칙에서 생성한 코드의 가상 자료 시험.  임의 코드 생성·동시성·DB 장애·금액 계산·실제 회사 검증은 수행하지 않음.",
+  "rules": {
+    "receive": {
+      "require": true,
+      "stock": [
+        "add",
+        "stock",
+        "qty"
+      ],
+      "remaining": "remaining"
+    },
+    "reserve": {
+      "require": [
+        "gte",
+        "available",
+        "qty"
+      ],
+      "stock": "stock",
+      "remaining": "qty"
+    },
+    "ship": {
+      "require": [
+        "and",
+        [
+          "gte",
+          "remaining",
+          "qty"
+        ],
+        [
+          "gte",
+          "stock",
+          "qty"
+        ]
+      ],
+      "stock": [
+        "sub",
+        "stock",
+        "qty"
+      ],
+      "remaining": [
+        "sub",
+        "remaining",
+        "qty"
+      ]
+    },
+    "cancel": {
+      "require": [
+        "gte",
+        "remaining",
+        "qty"
+      ],
+      "stock": "stock",
+      "remaining": [
+        "sub",
+        "remaining",
+        "qty"
+      ]
+    }
+  },
+  "codeHash": "e9c6bd2e955befa19a9a4362d676885e9d7f0a773399f8e675126c642c9240f0",
+  "review": {
+    "verdict": "pass",
+    "issues": [],
+    "summary": "계약과 일치, 실제 시험은 별도",
+    "codeHash": "e9c6bd2e955befa19a9a4362d676885e9d7f0a773399f8e675126c642c9240f0"
+  },
+  "artifact": "inventory-example.mjs",
+  "seed": 20261109
+}
