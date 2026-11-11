@@ -1,0 +1,21 @@
+# 빌드 산출물 (Start-KOMY.cmd / npm run build가 매번 다시 생성)
+dist/
+
+# 시험 중 생성되는 임시 폴더
+job-test-*/
+komy-vault-test-*/
+
+# 사용자 기록·암호화 키·DB (설치 환경별, 커밋 금지)
+.local/
+*.dpapi
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+.env
+.env.*
+
+# 설치 환경별 호스팅 설정 (Site ID 포함, 커밋 금지)
+.openai/
+
+node_modules/
